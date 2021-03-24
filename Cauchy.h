@@ -7,6 +7,8 @@ class Cauchy {
 public:
   Cauchy(GridFunc const& grid, double (*func)(double, double));
 
+  Cauchy(GridFunc const& grid, double (*func)(double, double), double y0);
+
   double MaxErr();
 
   bool PrintErr(std::string fileName);

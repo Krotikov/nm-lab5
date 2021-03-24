@@ -6,5 +6,7 @@ int main() {
 
   TestMaxErr(&FuncSol, &Func);
 
+  TestDisturb(&FuncSol, &Func);
+
   return 0;
 }
