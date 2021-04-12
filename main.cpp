@@ -2,11 +2,12 @@
 
 
 int main() {
+
   TestErr(&FuncSol, &Func);
 
   TestMaxErr(&FuncSol, &Func);
 
-  TestDisturb(&FuncSol, &Func);
+  TestDisturbUPD(&FuncSol, &Func);
 
   return 0;
 }

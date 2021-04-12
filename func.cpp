@@ -6,6 +6,16 @@ double Func(double x, double y) {
 }
 
 double FuncSol(double x) {
-  double res = 1.0 / sqrt(2 * pow(x, 4) * exp(x));
+  double res = 1.0 / (x * x * exp(x / 2) * sqrt(2.0));
+  return res;
+}
+
+double f2(double x, double y) {
+  double res = -y * tan(x) + 1.0 / cos(x);
+  return res;
+}
+
+double fs2(double x) {
+  double res = sin(x) + cos(x);
   return res;
 }

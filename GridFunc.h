@@ -37,5 +37,6 @@ public:
   point_t* points;
   double lbord;
   double rbord;
+  double dx;
   double (*func)(double);
 };

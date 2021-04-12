@@ -11,6 +11,8 @@ public:
 
   double MaxErr();
 
+  double ErrInPoint();
+
   bool PrintErr(std::string fileName);
 
   bool PrintY(std::string fileName);

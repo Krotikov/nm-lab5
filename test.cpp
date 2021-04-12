@@ -1,7 +1,7 @@
 #include "test.h"
 
 static std::string FileName(std::string str, size_t symb) {
-  char sym = symb + '0';
+  char sym = (char)(symb + '0');
   std::string beg("Func/");
   std::string tmp = str + sym + ".txt";
   std::string res = beg + tmp;
@@ -29,7 +29,7 @@ void TestErr(double(*funcSol)(double), double(*funcR)(double, double)) {
 void TestMaxErr(double(*funcSol)(double), double(*funcR)(double, double)) {
   double lbord = LBORD;
   double rbord = RBORD;
-  size_t numNods = 1;
+  size_t numNods = 2;
 
   std::ofstream xout, err, hout;
 
@@ -57,24 +57,58 @@ void TestMaxErr(double(*funcSol)(double), double(*funcR)(double, double)) {
   return;
 }
 
-void TestDisturb(double(*funcSol)(double), double(*funcR)(double, double)) {
-  std::ofstream xout, maxErr;
-  size_t num = NUM_NODS_DIST;
+//void TestDisturb(double(*funcSol)(double), double(*funcR)(double, double)) {
+//  std::ofstream xout, maxErr;
+//  size_t num = NUM_DIST;
+//
+//  xout.open("maxErr(y0)/y0Val.txt");
+//  maxErr.open("maxErr(y0)/maxErr.txt");
+//
+//  double lbord = LBORD;
+//  double rbord = RBORD;
+//  double ldist = LDIST;
+//  double rdist = RDIST;
+//  double dx = (rdist - ldist) / num;
+//  double y0 = ldist;
+//
+//  for (size_t i = 0; i < num; ++i, y0 += dx) {
+//    size_t numNods = NUMP_DIST;
+//
+//    GridFunc grid(lbord, rbord, numNods, funcSol);
+//    Cauchy sol(grid, funcR, y0);
+//
+//    double err = sol.MaxErr();
+//
+//    if (err > 5)
+//      err = 5;
+//
+//    xout << y0 << " ";
+//    maxErr << err << " ";
+//  }
+//  xout.close();
+//  maxErr.close();
+//
+//  return;
+//}
 
-  xout.open("maxErr(y0)/y0Val.txt");
-  maxErr.open("maxErr(y0)/maxErr.txt");
+
+void TestDisturbUPD(double(*funcSol)(double), double(*funcR)(double, double)) {
+  std::ofstream xout, maxErr;
+  size_t num = NUM_DIST;
+
+  xout.open("disturb/y0Val.txt");
+  maxErr.open("disturb/maxErr.txt");
 
   double lbord = LBORD;
   double rbord = RBORD;
-  double ldist = LDIST;
-  double rdist = RDIST;
-  double dx = (rdist - ldist) / num;
-  double y0 = ldist;
+  double dx = pow(10, 0.25);
+  double dist = 1;
 
-  for (size_t i = 0; i < num; ++i, y0 += dx) {
+  for (size_t i = 0; i < num; ++i, dist /= dx) {
     size_t numNods = NUMP_DIST;
-
     GridFunc grid(lbord, rbord, numNods, funcSol);
+
+    double y0 = grid.points[0].y - dist;
     Cauchy sol(grid, funcR, y0);
 
     double err = sol.MaxErr();
@@ -82,11 +116,42 @@ void TestDisturb(double(*funcSol)(double), double(*funcR)(double, double)) {
     if (err > 5)
       err = 5;
 
-    xout << y0 << " ";
+    xout << dist << " ";
     maxErr << err << " ";
   }
   xout.close();
   maxErr.close();
+
+  return;
+}
+
+void TestErrP(double(*funcSol)(double), double(*funcR)(double, double)) {
+  double lbord = LBORD;
+  double rbord = RBORD;
+  size_t numNods = 1;
+
+  std::ofstream xout, err, hout;
+
+  xout.open("errp(h)/len.txt");
+  err.open("errp(h)/err.txt");
+  hout.open("errp(h)/h.txt");
+
+  for (size_t i = 1; i < 16; ++i) {
+    numNods *= 2;
+    GridFunc grid(lbord, rbord, numNods, funcSol);
+    Cauchy sol(grid, funcR);
+
+    double perr = sol.ErrInPoint();
+    double h = (rbord - lbord) / numNods;
+    double hMod = pow(h, ORDER);
+
+    xout << h << " ";
+    err << perr << " ";
+    hout << hMod << " ";
+  }
+  xout.close();
+  err.close();
+  hout.close();
 
   return;
 }
